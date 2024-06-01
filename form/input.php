@@ -1,8 +1,9 @@
 <?php
 
 session_start();
-//透明重ねNGにする
+require 'validation.php';
 
+//透明重ねNGにする
 header('X-FRAME-OPTIONS:DENY');
 if(!empty($_POST)){
   echo '<pre>';
@@ -26,8 +27,9 @@ input.php,confirm.php,thanks.php
 CSRF 偽物のinput.php->悪意のあるページ
 */
 $pageFlag =0;
+$errors = validation($_POST);
 
-if(!empty($_POST['btn_confirm'])){
+if(!empty($_POST['btn_confirm']) && empty($errors)){
   $pageFlag = 1;
 }
 if(!empty($_POST['btn_submit'])){
@@ -89,7 +91,7 @@ if(!empty($_POST['btn_submit'])){
 <?php endif; ?>
 
 <?php if ($pageFlag === 2) : ?>
-  <?php if($_POST['csrf'] === $_SESSIOM['csrfToken']) : ?>
+  <?php if($_POST['csrf'] === $_SESSION['csrfToken']) : ?>
 送信が完了しました
 <?php unset($_SESSION['csrfToken']); ?>
 <?php endif; ?>
@@ -103,6 +105,15 @@ if(!empty($_POST['btn_submit'])){
   }
   $token = $_SESSION['csrfToken']
   ?>
+  <?php if(!empty($errors) && !empty($_POST['btn_confirm']) ) : ?>
+    <?php echo '<ul>' ;?>
+    <?php
+      foreach($errors as $error) {
+        echo '<li>' . $error  . '</li>';
+      }
+      ?>
+    <?php echo '</ul>' ;?>
+  <?php endif ;?>
   <form method="POST" action="input.php">
     氏名
     <input type="text" name="your_name" value="<?php if(!empty($_POST['your_name'])){echo h($_POST['your_name']) ;} ?>">
