@@ -141,9 +141,7 @@ if(!empty($_POST['btn_submit'])){
     </select>
     <br>
     お問い合わせ内容
-    <textarea name="contact">
-      <?php if(!empty($_POST['contact'])){echo h($_POST['contact']) ;} ?>
-    </textarea>
+    <textarea name="contact"><?php if(!empty($_POST['contact'])){echo h($_POST['contact']) ;} ?></textarea>
     <br>
     <input type="checkbox" name="caution" value="1">注意事項のチェック
     <br>
